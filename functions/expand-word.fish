@@ -51,7 +51,3 @@ Options
   set -g __word_expansions $__word_expansions "$condition
 $expander"
 end
-
-function expand:match-pattern -a pattern token
-  commandline -t | grep -q $pattern
-end
