@@ -19,7 +19,7 @@ function expand:execute -d "Executes word expansion on the current token"
     # Check if the expansion condition matches the token.
     if eval "$expansion[1]" > /dev/null
       # If the expansion matches, execute the expander and use its output as replacements.
-      if set -l new (eval "$expansion[2]")
+      if set -l new (eval "$expansion[2]" | sed '/^\s*$/d')
         set replacements $replacements $new
       end
     end
