@@ -12,6 +12,9 @@ Word expansion for [Oh My Fish!][omf].
 This plugin provides the means of adding word-by-word expansions for other plugins, as well as for your own expansions. A word expansion is a real-time substitution of the words you type on the command line. It is a bit like `abbr`, but dynamic and extensible and a whole lot more awesome.
 
 
+[![asciicast](https://asciinema.org/a/39860.png)](https://asciinema.org/a/39860)
+
+
 ## Install
 ```fish
 $ omf install expand
