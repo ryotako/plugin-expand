@@ -1,5 +1,12 @@
-# expand
-Word expansion for [Oh My Fish][omf].
+<img src="https://cdn.rawgit.com/oh-my-fish/oh-my-fish/e4f1c2e0219a17e2c748b824004c8d0b38055c16/docs/logo.svg" align="left" height="160px"/>
+
+### expand
+Word expansion for [Oh My Fish!][omf].
+
+[![MIT License][license-badge]](/LICENSE)
+
+<br/>
+
 
 ## Overview
 This plugin provides the means of adding word-by-word expansions for other plugins, as well as for your own expansions. A word expansion is a real-time substitution of the words you type on the command line. It is a bit like `abbr`, but dynamic and extensible and a whole lot more awesome.
@@ -13,6 +20,13 @@ $ omf install expand
 
 ## Using it
 Using expansions already provided by your installed plugins couldn't be any easier. Word expansions are triggered when you use the <kbd>TAB</kbd> key when the cursor is over a word. Before checking for regular command completions, the current word will be checked against available word expansions. If a suitable expansion is found, the current word will be replaced with the result of the expansion.
+
+If more than one suitable expansion is found for the current word, `expand` will attempt to use an _interactive filter_ tool to allow you to choose interactively which expansion you would like to use (or none if you don't want any of them). By default, `expand` will use the filter command specified in the `$FILTER` environment variable. If a filter is not specified, `expand` will look for some popular ones if you have them installed:
+
+- [fzf]: A command-line fuzzy finder written in Go.
+- [peco]: The simplistic interactive filtering tool, written in Go.
+- [percol]: An interactive grep tool written in Python.
+- [selecta]: A fuzzy text selector written in Ruby.
 
 Expansions can be more than simple abbreviations; the current word can be used to introduce patterns and queries to provide dynamic expansions in real-time.
 
@@ -52,9 +66,9 @@ expand-word -p '^git.+' -e 'some_expander_function'
 
 The `^git.+` pattern will match any word that starts with `git`, but not `git` itself. Keep in mind that the regular expression format is the POSIX ERE syntax, not PCRE. Check the `grep` manual for a good guide to this syntax.
 
-The second type of condition is more interesting; a function condition is a script or function that is run each time you attempt to expand a word. The function can perform any logic you need to perform in order to correctly determine if your expander can expand the current word. If the word is of a format that your expander is expecting, your function should return `0` to tell `expand` to use your expander. If the function cannot expand the given word, a non-zero value should be returned instead, and expansion will be deferred to another expander.
+The second type of condition is more interesting; a function condition is a script or function that is run each time you attempt to expand a word. The function can perform any logic you need to perform in order to correctly determine if your expander can expand the current word. If the word is of a format that your expander is expecting, your function should return `0` to tell `expand` to use your expander. If the function cannot expand the given word, a non-zero value should be returned instead, and expander will be skipped.
 
-For performance reasons, you may want to put some effort into optimizing a condition function; if you have a lot of expansions, _all_ of the condition functions could very well be run at one time. If your condition function is slowing down the responsiveness of word expansion, you might want to use a simpler condition.
+For performance reasons, you may want to put some effort into optimizing a condition function, since _all_ of the condition functions will run every time you expand a word. If you have a lot of expansions or slow conditions, you may experience some lag when expanding words.
 
 Below is an example of using a function as an expansion condition:
 
@@ -71,7 +85,7 @@ expand-word -c 'should_expand_home' -e 'echo $HOME'
 This expansion will only be used on the word "home", but only if you are not currently in your home directory. Pretty cool, eh?
 
 
-## Giving up
+### Giving up
 In addition to conditions, you can also have your expanders "give up" prematurely when trying to expand a word by returning a non-zero exit code. If your expander gives up a word, it will be ignored and the next expander will be used as normal.
 
 
@@ -83,7 +97,11 @@ In addition to conditions, you can also have your expanders "give up" prematurel
 [commandline]: http://fishshell.com/docs/current/commands.html#commandline
 [completions]: http://fishshell.com/docs/current/tutorial.html#tut_tab_completions
 [contributors]: https://github.com/oh-my-fish/plugin-fasd/graphs/contributors
+[fzf]: https://github.com/junegunn/fzf
 [license-badge]: https://img.shields.io/badge/license-MIT-007EC7.svg?style=flat-square
 [mit]: http://opensource.org/licenses/MIT
 [omf]: https://www.github.com/oh-my-fish/oh-my-fish
+[peco]: https://github.com/peco/peco
+[percol]: https://github.com/mooz/percol
 [regex]: http://pubs.opengroup.org/onlinepubs/009696899/basedefs/xbd_chap09.html
+[selecta]: https://github.com/garybernhardt/selecta
