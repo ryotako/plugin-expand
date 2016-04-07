@@ -1,4 +1,11 @@
 function expand:choose-next
+  # Since we can't conditionally switch key bind modes, we need to pass through command completion requests again even
+  # though we are already in expand mode.
+  if not set -q __expand_replacements[1]
+    commandline -f complete
+    return
+  end
+
   # If a filter is specified and more than one replacement is available, use it to filter through the available
   # replacements.
   if begin; set -q __expand_replacements[2]; and set -q __expand_filter; end
