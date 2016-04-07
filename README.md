@@ -31,6 +31,10 @@ If more than one suitable expansion is found for the current word, `expand` will
 - [percol]: An interactive grep tool written in Python.
 - [selecta]: A fuzzy text selector written in Ruby.
 
+If no filters are specified or installed, you can still cycle through all of the available replacements by pressing <kbd>TAB</kbd> repeatedly.
+
+If you decide that you want to cancel the current expansion, you can press <kbd>Backspace</kbd> to undo the expansion.
+
 Expansions can be more than simple abbreviations; the current word can be used to introduce patterns and queries to provide dynamic expansions in real-time.
 
 

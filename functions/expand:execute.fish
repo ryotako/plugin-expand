@@ -1,52 +1,41 @@
-function expand:execute -d "Executes word expansion on the current token"
-  # Choose a filter.
-  if not set -q FILTER
-    if type -q peco
-      set FILTER 'peco --prompt ">" --layout bottom-up'
-    else if type -q percol
-      set FILTER 'percol'
-    else if type -q fzf
-      set FILTER 'fzf'
-    else if type -q selecta
-      set FILTER 'selecta'
-    end
-  end
+function expand:execute -d 'Executes word expansion on the current token'
+  # Record the current unexpanded command string.
+  commandline | read -g __expand_last_string
+
+  # Reset the replacements for this session.
+  set -g __expand_replacements
 
   # Iterate available expansions for one that matches the current token.
-  for expansion in $__word_expansions
+  for expansion in $__expand_expanders
     set -l expansion (echo $expansion)
 
     # Check if the expansion condition matches the token.
     if eval "$expansion[1]" > /dev/null
       # If the expansion matches, execute the expander and use its output as replacements.
-      if set -l new (eval "$expansion[2]" | sed '/^\s*$/d')
-        set replacements $replacements $new
+      if set -l replacements (eval "$expansion[2]" | sed '/^\s*$/d')
+        set __expand_replacements $__expand_replacements $replacements
       end
     end
   end
 
-  # If a filter is specified and more than one replacement is available, use it to filter through the available
-  # replacements.
-  if begin; set -q replacements[2]; and set -q FILTER; end
-    for line in $replacements
-      echo $line
-    end | eval "$FILTER" | read replacement
-
-    # Interactive filters will cause Fish to need a repaint.
-    commandline -f repaint
-
-    # If a replacement was chosen, use it.
-    if test -n "$replacement"
-      commandline -t -r "$replacement"
-    end
-
-  # If only one replacement is available, just use it without prompt.
-  else if set -q replacements[1]
-    # No filter is specified, so just use the top replacement.
-    commandline -t -r "$replacements[1]"
-
-  # No replacements are available for the current token, so defer to regular completion.
-  else
+  # If no replacements are available for the current token, defer to regular completion.
+  if not set -q __expand_replacements[1]
     commandline -f complete
+    return
   end
+
+  # Set a default filter list if none is specified.
+  set -q FILTER
+    or set -l FILTER percol peco fzf selecta
+
+  # Choose the filter to use for this session ahead of time for performance.
+  set -e __expand_filter
+  for filter in $FILTER
+    if type -q $filter
+      set -g __expand_filter $filter
+    end
+  end
+
+  # Choose a replacement from the ones now defined.
+  expand:choose-next
 end

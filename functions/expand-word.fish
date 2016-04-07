@@ -48,6 +48,6 @@ Options
     return 1
   end
 
-  set -g __word_expansions $__word_expansions "$condition
+  set -g __expand_expanders $__expand_expanders "$condition
 $expander"
 end
