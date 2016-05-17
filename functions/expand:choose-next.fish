@@ -24,12 +24,7 @@ function expand:choose-next
 
   # If a replacement was chosen, use it.
   if test -n "$replacement"
-    # Enquote replacements with spaces.
-    if echo "$replacement" | grep -q ' '
-      commandline -t -r "\"$replacement\""
-    else
-      commandline -t -r "$replacement"
-    end
+    commandline -t -r "$replacement"
   end
 
   # If there are at least two replacements, cycle the replacement queue order.
