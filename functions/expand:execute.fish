@@ -20,7 +20,7 @@ function expand:execute -d 'Executes word expansion on the current token'
 
   # If no replacements are available for the current token, defer to regular completion.
   if not set -q __expand_replacements[1]
-    commandline -f complete
+    commandline -f complete down-line
     return
   end
 
